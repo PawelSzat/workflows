@@ -1,0 +1,65 @@
+name: CI
+
+on:
+    push:
+        branches:
+        - action
+
+jobs:
+    format:
+        name: Check format
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+        - uses: psf/black@22.3.0
+          with:
+            options: "--check --verbose"
+            src: "./"
+            version: "22.3.0"
+
+    lint:
+        name: Run linter
+        needs: [format]
+        runs-on: ubuntu-latest
+        container:
+            image: alpine/flake8:3.8.4
+            options: --cpus="1"
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v3
+            - name: Run flake8
+              run: flake8 ./ --append-config=./.flake8 --verbose
+    lint_code:
+        name: Run pylint
+        needs: [lint]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v3
+            - name: Set up Python environment
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.12'
+            - name: Install dependencies
+              run: |
+                pip install -r requirements.txt
+            - name: Run pylint
+              run: pylint ./ 
+
+    test:
+        name: Run tests
+        needs: [lint]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v3
+            - name: Set up Python environment
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.12'
+            - name: Install dependencies
+              run: |
+                pip install -r requirements.txt
+            - name: Run tests
+              run: |
+                pytest //Users/pawelszatkowski/test-automation-gha || { echo 'Test faild'; exit 1; }
