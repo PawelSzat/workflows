@@ -1,5 +1,12 @@
 import pytest
 from main import factorials
+@pytest.mark.parametrize("input_value, expected_output", [
+    (0, [1]),  # factorials(0) should return [1]
+    (1, [1]),  # factorials(1) should return [1]
+    (3, [1, 2, 6]),  # factorials(3) should return [1, 2, 6]
+])
+def test_factorials_parametrize(input_value, expected_output):
+    assert list(factorials(input_value)) == expected_output
 
 def test_factorials_negative():
     with pytest.raises(ValueError, match="Input must be non-negative"):
