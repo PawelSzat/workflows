@@ -2,7 +2,7 @@ import pytest
 from main import factorials
 
 def test_factorials_negative():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Input must be non-negative"):
         list(factorials(-5))
 
 def test_factorials_zero():
