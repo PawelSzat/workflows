@@ -6,7 +6,7 @@ def test_factorials_negative():
         list(factorials(-5))
 
 def test_factorials_zero():
-    assert list(factorials(0)) == []
+    assert list(factorials(0)) == [1]
 
 def test_factorials_positive():
     expected_values = [1, 2, 6, 24, 120]
